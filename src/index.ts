@@ -1,3 +1,4 @@
+
 function calculate(a: number, b: number, op: string): number {
   switch (op) {
     case '+':
@@ -28,5 +29,6 @@ calculateBtn?.addEventListener('click', () => {
     resultSpan.textContent = isNaN(result) ? 'Hiba' : result.toString();
   }
 });
+
 
 export {};
