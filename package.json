@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "test": "npm run build"
+    "test": "npm run build",
+    "sprint:deps": "python3 -m venv .venv && . .venv/bin/activate && python -m pip install -r requirements.txt",
+    "sprint:run": ". .venv/bin/activate && python tools/jira_sprint_processor.py --csv \"$CSV\""
   },
   "keywords": [],
   "author": "",
