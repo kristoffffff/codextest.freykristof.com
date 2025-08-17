@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+	<meta charset="UTF-8" />
+	<title>JIRA Sprint Feldolgozó</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<style>
+		body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; margin: 2rem; }
+		.container { max-width: 900px; margin: 0 auto; }
+		h1 { font-size: 1.6rem; margin: 0 0 1rem; }
+		.card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+		label { display: block; margin-bottom: .5rem; font-weight: 600; }
+		input[type=file] { display: block; margin-bottom: .75rem; }
+		button { padding: .5rem 1rem; font-size: 1rem; cursor: pointer; }
+		.meta { color: #666; font-size: .95rem; }
+		.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+		img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 6px; }
+		ul { padding-left: 1.1rem; }
+		li { margin: .25rem 0; }
+		.alert { padding: .5rem .75rem; background: #fff4e5; border: 1px solid #ffd8a8; border-radius: 6px; margin-bottom: 1rem; }
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>JIRA Sprint Feldolgozó</h1>
+		<p class="meta">Dátum: {{ stamp }}</p>
+
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				<div class="alert">
+					{% for m in messages %}
+						<div>{{ m }}</div>
+					{% endfor %}
+				</div>
+			{% endif %}
+		{% endwith %}
+
+		<div class="card">
+			<form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+				<label>JIRA CSV feltöltése</label>
+				<input type="file" name="csv" accept=".csv" required />
+				<button type="submit">Feldolgozás</button>
+			</form>
+		</div>
+
+		{% if has_reports %}
+			<div class="card">
+				<h2>Eredmények</h2>
+				{% if sprint_text %}
+					<p><strong>Sprint:</strong> {{ sprint_text }}<br />
+					<strong>Időszak:</strong> {{ sprint_start }} → {{ sprint_end }}</p>
+				{% endif %}
+				<div class="grid">
+					<div>
+						<h3>CSV kimenetek</h3>
+						<ul>
+							<li><a href="{{ url_for('files', subpath=(paths.snapshot|relpath)) }}" target="_blank">Snapshot CSV</a></li>
+							<li><a href="{{ url_for('files', subpath=(paths.events|relpath)) }}" target="_blank">Napi változások CSV</a></li>
+							<li><a href="{{ url_for('files', subpath=(paths.worklogs|relpath)) }}" target="_blank">Worklog CSV</a></li>
+							<li><a href="{{ url_for('files', subpath=(paths.worklogs_daily|relpath)) }}" target="_blank">Worklog (napi) CSV</a></li>
+							<li><a href="{{ url_for('files', subpath=(paths.burndown_csv|relpath)) }}" target="_blank">Burndown adathalmaz CSV</a></li>
+						</ul>
+					</div>
+					<div>
+						<h3>Burndown</h3>
+						{% if paths.burndown_png and paths.burndown_png|length %}
+							<img src="{{ url_for('files', subpath=(paths.burndown_png|relpath)) }}" alt="Burndown" />
+						{% else %}
+							<p class="meta">Nincs burndown kép.</p>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+</body>
+</html>

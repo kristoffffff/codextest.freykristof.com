@@ -2,12 +2,11 @@
   "name": "codextest.freykristof.com",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "web/server.py",
   "scripts": {
-    "build": "tsc",
-    "test": "npm run build",
     "sprint:deps": "python3 -m venv .venv && . .venv/bin/activate && python -m pip install -r requirements.txt",
-    "sprint:run": ". .venv/bin/activate && python tools/jira_sprint_processor.py --csv \"$CSV\""
+    "sprint:run": ". .venv/bin/activate && python tools/jira_sprint_processor.py --csv \"$CSV\"",
+    "web": ". .venv/bin/activate && FLASK_APP=web/server.py flask run --host 0.0.0.0 --port 5000"
   },
   "keywords": [],
   "author": "",

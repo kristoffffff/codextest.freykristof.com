@@ -1,13 +1,8 @@
 # codextest.freykristof.com
 
-## Számológép (TS)
+## Sprint-feldolgozó (JIRA CSV → snapshotok, napi diff, worklog, burndown, web UI)
 
-- Fordítás: `npm run build` – a kimenet a `dist/` mappába kerül.
-- Megnyitás: nyisd meg az `index.html` fájlt böngészőben.
-
-## Sprint-feldolgozó (JIRA CSV → snapshotok, napi diff, worklog, burndown)
-
-Python-alapú eszköz, amely a JIRA CSV exportból naplózott snapshotokat készít, napi változásokat számol, worklogot aggregál, és burndown PNG-t rajzol.
+Python-alapú eszköz, amely a JIRA CSV exportból naplózott snapshotokat készít, napi változásokat számol, worklogot aggregál, és burndown PNG-t rajzol. Tartozik hozzá egy egyszerű webes felület CSV feltöltéshez és a kimenetek megtekintéséhez.
 
 ### Telepítés
 
@@ -15,37 +10,39 @@ Python-alapú eszköz, amely a JIRA CSV exportból naplózott snapshotokat kész
 2) Függőségek:
 
 ```bash
-python3 -m pip install -r requirements.txt
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements.txt
 ```
 
-### Használat
+### CLI használat
 
 ```bash
-python3 tools/jira_sprint_processor.py --csv /abszolut/utvonal/export.csv \
+python tools/jira_sprint_processor.py --csv /abszolut/utvonal/export.csv \
   --data-dir ./data/jira_sprint_processor
 ```
 
-- A `--data-dir` alapértelmezetten `./data/jira_sprint_processor`.
-- Snapshotok: `data/jira_sprint_processor/snapshots_csv/`
-- Jelentések: `data/jira_sprint_processor/reports/`
-
-Az eszköz:
-- Kinyeri a sprint intervallumot a Sprint mezőből (pl. „B2CP (25) #S16 - 0806 > 0903”).
-- Normalizálja a fő mezőket (Key, Summary, Status, Assignee, Story Points, Time Spent, Remaining Estimate, Created, Updated, Sprint).
-- Napi snapshotot ment (`snapshot_YYYY-MM-DD.csv`).
-- Kiszámolja a napi változásokat az előző snapshothoz képest (új/eltűnt issue, status/assignee/SP/time_spent/remaining_estimate változás).
-- Worklog oszlopokból (ha vannak) napi bontást készít a sprint ablakon belül.
-- A felgyűlt snapshotokból burndown görbét számol és PNG-t ment.
-
-Opciók:
-
-- `--today YYYY-MM-DD`: dátum felülbírálása (alapértelmezés: mai nap)
-- `--sprint-start YYYY-MM-DD --sprint-end YYYY-MM-DD`: sprint ablak kézi megadása
+Opcionális:
+- `--today YYYY-MM-DD`
+- `--sprint-start YYYY-MM-DD --sprint-end YYYY-MM-DD`
 
 Kimenetek (példa):
 - `data/jira_sprint_processor/reports/snapshot_2025-08-17.csv`
 - `data/jira_sprint_processor/reports/daily_events_2025-08-17.csv`
 - `data/jira_sprint_processor/reports/worklogs_2025-08-17.csv`
-- `data/jira_sprint_processor/reports/burndown_2025-08-17.png`
+- `data/jira_sprint_processor/reports/worklogs_daily_2025-08-17.csv`
+- `data/jira_sprint_processor/reports/burndown_2025-08-17.{csv,png}`
+
+### Web UI használat
+
+Indítás:
+
+```bash
+. .venv/bin/activate
+FLASK_APP=web/server.py FLASK_ENV=development flask run --host 0.0.0.0 --port 5000
+```
+
+- Böngészőben: `http://localhost:5000`
+- Töltsd fel a JIRA CSV-t, a rendszer futtatja a feldolgozást és linkeket ad a generált kimenetekhez.
 
 Megjegyzés: a „kész” státuszok listája: `done, closed, verifiable, verified, accepted, released`.
