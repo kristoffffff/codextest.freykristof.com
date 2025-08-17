@@ -1,0 +1,13 @@
+services:
+  web:
+    build: .
+    image: jira-sprint-processor:latest
+    container_name: jira-sprint-processor
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-change-me}
+      - MPLBACKEND=Agg
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

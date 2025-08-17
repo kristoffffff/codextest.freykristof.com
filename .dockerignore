@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.venv/
+
+# Node
+node_modules/
+dist/
+
+# Git
+.git/
+.gitignore
+
+# Data (mounted at runtime)
+data/
+
+# Misc
+Dockerfile
+.dockerignore
