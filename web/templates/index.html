@@ -36,11 +36,26 @@
 		{% endwith %}
 
 		<div class="card">
-			<form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
-				<label>JIRA CSV feltöltése</label>
-				<input type="file" name="csv" accept=".csv" required />
-				<button type="submit">Feldolgozás</button>
+			<form id="upload-form" action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+				<input type="file" name="csv" id="csv-input" accept=".csv" style="display:none" required />
+				<button type="button" id="upload-btn">CSV kiválasztása és feltöltése</button>
+				<span class="meta" id="file-name"></span>
 			</form>
+			<script>
+				(function(){
+					const file = document.getElementById('csv-input');
+					const btn = document.getElementById('upload-btn');
+					const form = document.getElementById('upload-form');
+					const span = document.getElementById('file-name');
+					btn && btn.addEventListener('click', function(){ file && file.click(); });
+					file && file.addEventListener('change', function(){
+						if (file.files && file.files.length > 0) {
+							if (span) { span.textContent = file.files[0].name; }
+							form && form.submit();
+						}
+					});
+				})();
+			</script>
 		</div>
 
 		{% if has_reports %}
